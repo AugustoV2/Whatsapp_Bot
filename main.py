@@ -5,16 +5,16 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 
-account_sid = 'AC5d650237c8e3bf97ab2544fcb3916719'
+account_sid = os.getenv("account_sid")
 auth_token = os.getenv("auth_token")
 print(auth_token)
 client = Client(account_sid, auth_token)
 
 message = client.messages.create(
-  from_='whatsapp:+14155238886',
-  content_sid='HXb5b62575e6e4ff6129ad7c8efe1f983e',
+  from_='whatsapp:' + os.getenv("TWILIO_WHATSAPP_FROM"),
+  content_sid=os.getenv("TWILIO_CONTENT_SID"),
   content_variables='{"1":"12/1","2":"3pm"}',
-  to='whatsapp:+919645497988'
+  to='whatsapp:' + os.getenv("TWILIO_WHATSAPP_TO")
 )
 
 print(message.sid)
