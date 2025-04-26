@@ -22,7 +22,7 @@ def whatsapp_chat():
 
     message = client.messages.create(
     from_='whatsapp:' + os.getenv("TWILIO_WHATSAPP_FROM"),
-    body='Fileeeee',
+    body='Tech News Fileee',
     
     to='whatsapp:' + os.getenv("TWILIO_WHATSAPP_TO")
     )
