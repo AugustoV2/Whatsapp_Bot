@@ -64,11 +64,11 @@ def upload_audio_to_envs(file_path):
             print("Error uploading file")
             return {'error': 'Error uploading file'}
 
-        # Assume the server gives a URL in plain text
+       
         uploaded_url = response.text.strip()
         print(f"Uploaded URL: {uploaded_url}")
 
-        # simple validation
+       
         if not uploaded_url.startswith("http"):
             print("Invalid upload response")
             return {'error': 'Invalid upload response'}
