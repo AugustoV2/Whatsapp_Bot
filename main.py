@@ -2,11 +2,13 @@ from twilio.rest import Client
 import os
 from dotenv import load_dotenv
 from gtts import gTTS
+import requests
 import google.generativeai as genai
 
 load_dotenv() 
+# Removed global temp_link as it is no longer needed
 
-def whatsapp_chat():
+def whatsapp_chat(temp_link):
 
   try:
     account_sid = os.getenv("account_sid")
@@ -16,7 +18,9 @@ def whatsapp_chat():
 
     message = client.messages.create(
     from_='whatsapp:' + os.getenv("TWILIO_WHATSAPP_FROM"),
-    media_url=['F:\vs code\Python\Whatsapp_Bot\technews.mp3'],
+    body='Here is an audio file for you!',
+    media_url=[temp_link],
+  
     to='whatsapp:' + os.getenv("TWILIO_WHATSAPP_TO")
     )
 
@@ -26,7 +30,27 @@ def whatsapp_chat():
     print(f"An error occurred: {e}")
 
 
+def upload_audio_temp(file_path):
+  global audio_url
+ 
+  try:
 
+  
+    with open("technews.mp3", 'rb') as file:
+      audio_url = requests.post('https://file.io', files={'file': file})
+
+    if audio_url.status_code == 200:
+      temp_link = audio_url.json().get('link')
+      print(f"File uploaded successfully: {temp_link}")
+      return temp_link
+    else:
+      print(f"Failed to upload file: {audio_url.text}")
+      return None
+
+  except Exception as e:
+    print(f"An error occurred: {e}")
+    return None
+  
 def ai_voice():
 
   try:
@@ -36,11 +60,14 @@ def ai_voice():
     myobj = gTTS(text=mytext, lang=language, slow=False)
 
     myobj.save("technews.mp3")
+   
 
-    # os.system("start welcome.mp3")
+    # os.system("technews.mp3")
 
   except Exception as e:
     print(f"An error occurred: {e}")
+
+
   
 
 def gemini():
@@ -67,4 +94,8 @@ def gemini():
 if __name__ == "__main__":
   gemini()
   ai_voice()
-  whatsapp_chat()
+  temp_link = upload_audio_temp("technews.mp3")
+  if temp_link:
+      whatsapp_chat(temp_link)
+  else:
+      print("Failed to upload audio. WhatsApp message not sent.")
