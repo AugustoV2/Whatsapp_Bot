@@ -1,6 +1,6 @@
-# Let's create a nicely formatted README.md version with markdown styling
 
-readme_content = """
+
+
 # 📄 AI-Generated Tech News to WhatsApp (with Audio)
 
 ## Overview
@@ -57,13 +57,7 @@ This project uses **Gemini AI** to generate a short tech news summary, converts 
 3. Upload the audio file with `upload_audio_to_envs()`
 4. Send the audio link via `whatsapp_chat()`
 
----
 
-## ⚙️ Improvements Suggested
-- Replace hardcoded upload URL (`https://envs.sh`) with a real service (e.g., AWS S3, Cloudinary).
-- Add better error handling and retries for stability.
-- Secure API keys and file management.
-- Replace `print` with structured logging.
 
 ---
 
@@ -75,12 +69,7 @@ This project uses **Gemini AI** to generate a short tech news summary, converts 
 
 ## 📬 Contact
 For any queries or suggestions, feel free to reach out! 🚀
-"""
 
-# Save it to a file
-readme_path = "/mnt/data/README.md"
-with open(readme_path, "w") as file:
-    file.write(readme_content)
 
-readme_path
+
 
