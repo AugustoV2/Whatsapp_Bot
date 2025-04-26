@@ -2,50 +2,67 @@ from twilio.rest import Client
 import os
 from dotenv import load_dotenv
 from gtts import gTTS
-from google import genai
+import google.generativeai as genai
 
 load_dotenv() 
 
 def whatsapp_chat():
-  account_sid = os.getenv("account_sid")
-  auth_token = os.getenv("auth_token")
-  print(auth_token)
-  client = Client(account_sid, auth_token)
 
-  message = client.messages.create(
-  from_='whatsapp:' + os.getenv("TWILIO_WHATSAPP_FROM"),
-  media_url=['F:\vs code\Python\Whatsapp_Bot\technews.mp3'],
-  to='whatsapp:' + os.getenv("TWILIO_WHATSAPP_TO")
-  )
+  try:
+    account_sid = os.getenv("account_sid")
+    auth_token = os.getenv("auth_token")
+    print(auth_token)
+    client = Client(account_sid, auth_token)
 
-  print(message.sid)
+    message = client.messages.create(
+    from_='whatsapp:' + os.getenv("TWILIO_WHATSAPP_FROM"),
+    media_url=['F:\vs code\Python\Whatsapp_Bot\technews.mp3'],
+    to='whatsapp:' + os.getenv("TWILIO_WHATSAPP_TO")
+    )
+
+    print(message.sid)
+  
+  except Exception as e:
+    print(f"An error occurred: {e}")
+
 
 
 def ai_voice():
-  mytext = response.text
-  language = 'en'
 
-  myobj = gTTS(text=mytext, lang=language, slow=False)
+  try:
+    mytext = response.text
+    language = 'en'
 
-  myobj.save("technews.mp3")
+    myobj = gTTS(text=mytext, lang=language, slow=False)
 
-  # os.system("start welcome.mp3")
+    myobj.save("technews.mp3")
 
+    # os.system("start welcome.mp3")
+
+  except Exception as e:
+    print(f"An error occurred: {e}")
+  
 
 def gemini():
- 
+    
+    global response
+    try:
+      api_key = os.getenv("GEMINI_API_KEY")
+      genai.configure(api_key=api_key)
 
-  client = genai.Client(api_key="YOUR_API_KEY")
+      model = genai.GenerativeModel(model_name="models/gemini-1.5-flash-latest")
 
-  global response
+      prompt = "Write a 100 word summary of the latest tech news."
 
-  response = client.models.generate_content(
-      model="gemini-2.0-flash", contents="Fetch me the latest 3 tech news",
-  )
+      response = model.generate_content(prompt)
 
- 
-  print(response.text)
+      print(response.text)
+      return response.text
+    except Exception as e:
+      print(f"An error occurred: {e}")
 
+      
+    
 
 if __name__ == "__main__":
   gemini()
