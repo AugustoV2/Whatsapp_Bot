@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from gtts import gTTS
 import requests
 import google.generativeai as genai
+import requests
 
 
 
@@ -11,6 +12,7 @@ load_dotenv()
 
 
 def whatsapp_chat():
+  
 
   try:
     account_sid = os.getenv("account_sid")
@@ -25,10 +27,15 @@ def whatsapp_chat():
     to='whatsapp:' + os.getenv("TWILIO_WHATSAPP_TO")
     )
 
+    print("hello")
+    print(audio_url)
+
+   
     message = client.messages.create(
     from_='whatsapp:' + os.getenv("TWILIO_WHATSAPP_FROM"),
-    body='Here is an audio file for you!',
-    media_url=['https://envs.sh/1HK.mp3'],
+    
+   
+    media_url=[audio_url],
   
     to='whatsapp:' + os.getenv("TWILIO_WHATSAPP_TO")
     )
@@ -39,7 +46,41 @@ def whatsapp_chat():
     print(f"An error occurred: {e}")
 
 
-  
+
+
+
+def upload_audio_to_envs(file_path):
+    print("Starting upload...")
+
+    try:
+        url = "https://envs.sh"
+        
+        with open(file_path, 'rb') as f:
+            files = {'file': (file_path, f, 'audio/mpeg')}
+            
+            response = requests.post(url, files=files, timeout=30)
+
+        if response.status_code != 200:
+            print("Error uploading file")
+            return {'error': 'Error uploading file'}
+
+        # Assume the server gives a URL in plain text
+        uploaded_url = response.text.strip()
+        print(f"Uploaded URL: {uploaded_url}")
+
+        # simple validation
+        if not uploaded_url.startswith("http"):
+            print("Invalid upload response")
+            return {'error': 'Invalid upload response'}
+
+        return uploaded_url
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return {'error': 'Error uploading file'}
+
+
+
 def ai_voice():
 
   try:
@@ -83,13 +124,9 @@ def gemini():
 if __name__ == "__main__":
   gemini()
   ai_voice()
-  
-  
-
- 
- 
-
-  whatsapp_chat() 
+  audio_url = upload_audio_to_envs("technews.mp3")
+  print(audio_url)
+  whatsapp_chat()
 
   
  
